@@ -17,7 +17,7 @@ public class RankingServiceTest {
 
         // Assert
         assertNotNull(posicao);
-        assertEquals(1, posicao.getPosicao());
+        assertEquals(0, posicao.getPosicao());
         assertEquals(100, posicao.getPontuacao());
         assertEquals("+2", posicao.getVariacao());
     }

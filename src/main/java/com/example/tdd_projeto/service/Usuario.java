@@ -1,5 +1,6 @@
 package com.example.tdd_projeto.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +18,6 @@ public class Usuario {
     }
 
     public int getPontuacaoTotal() {
-        // Cada engajamento soma pontos (postagem = 50, resposta = 30, default = 10)
         int pontos = 0;
         for (Map.Entry<String, Integer> entry : engajamentos.entrySet()) {
             String tipo = entry.getKey();
@@ -35,7 +35,14 @@ public class Usuario {
         return nome;
     }
 
+    // 🔧 Corrigido: gera uma lista de engajamentos baseada no map
     public List<String> getEngajamentos() {
-        return (List<String>) Map.of();
+        List<String> lista = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : engajamentos.entrySet()) {
+            for (int i = 0; i < entry.getValue(); i++) {
+                lista.add(entry.getKey()); // adiciona o tipo várias vezes
+            }
+        }
+        return lista;
     }
 }
