@@ -1,6 +1,11 @@
 package com.example.tdd_projeto.service;
 
 import org.junit.jupiter.api.Test;
+
+import com.example.tdd_projeto.application.service.RankingPosicao;
+import com.example.tdd_projeto.application.service.RankingService;
+import com.example.tdd_projeto.application.service.Usuario;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class RankingServiceTest {

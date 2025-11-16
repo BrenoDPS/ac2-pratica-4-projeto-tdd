@@ -1,4 +1,4 @@
-package com.example.tdd_projeto.service;
+package com.example.tdd_projeto.application.service;
 
 public class RankingPosicao {
     private final int posicao;

@@ -1,4 +1,4 @@
-package com.example.tdd_projeto.service;
+package com.example.tdd_projeto.application.service;
 
 import java.util.List;
 

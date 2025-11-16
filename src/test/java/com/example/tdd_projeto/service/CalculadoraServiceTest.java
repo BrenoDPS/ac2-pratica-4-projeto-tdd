@@ -1,5 +1,8 @@
 package com.example.tdd_projeto.service;
 import org.junit.jupiter.api.Test;
+
+import com.example.tdd_projeto.application.service.CalculadoraService;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CalculadoraServiceTest {

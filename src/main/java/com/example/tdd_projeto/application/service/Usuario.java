@@ -1,4 +1,4 @@
-package com.example.tdd_projeto.service;
+package com.example.tdd_projeto.application.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +35,7 @@ public class Usuario {
         return nome;
     }
 
-    // 🔧 Corrigido: gera uma lista de engajamentos baseada no map
+    //  Corrigido: gera uma lista de engajamentos baseada no map
     public List<String> getEngajamentos() {
         List<String> lista = new ArrayList<>();
         for (Map.Entry<String, Integer> entry : engajamentos.entrySet()) {
