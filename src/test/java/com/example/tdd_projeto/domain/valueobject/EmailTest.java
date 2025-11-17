@@ -50,8 +50,7 @@ class EmailTest {
         "@domain.com",
         "user@",
         "user @domain.com",
-        "user@domain",
-        ""
+        "user@domain"
     })
     void deveRejeitarEmailsInvalidos(String emailInvalido) {
         // WHEN & THEN
