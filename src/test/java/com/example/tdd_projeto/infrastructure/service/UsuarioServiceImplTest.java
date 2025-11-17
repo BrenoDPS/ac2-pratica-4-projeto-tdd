@@ -227,4 +227,194 @@ class UsuarioServiceImplTest {
             resultado.get(1).getPontuacaoTotal()
         );
     }
+
+    @Test
+    @DisplayName("Deve criar usuário com email null")
+    void deveCriarUsuarioComEmailNull() {
+        // GIVEN
+        UsuarioDTO dtoSemEmail = UsuarioDTO.builder()
+                .nome("Pedro Santos")
+                .email(null)
+                .build();
+        
+        Usuario usuarioSemEmail = Usuario.builder()
+                .id(3L)
+                .nome("Pedro Santos")
+                .email(null)
+                .build();
+        
+        when(usuarioRepository.save(any(Usuario.class)))
+            .thenReturn(usuarioSemEmail);
+        
+        // WHEN
+        UsuarioDTO resultado = usuarioService.criar(dtoSemEmail);
+        
+        // THEN
+        assertThat(resultado).isNotNull();
+        assertThat(resultado.getNome()).isEqualTo("Pedro Santos");
+        verify(usuarioRepository, never()).findByEmail_Endereco(anyString());
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção ao atualizar usuário inexistente")
+    void deveLancarExcecaoAoAtualizarUsuarioInexistente() {
+        // GIVEN
+        UsuarioDTO atualizacaoDTO = UsuarioDTO.builder()
+                .nome("Novo Nome")
+                .build();
+        
+        when(usuarioRepository.findById(999L))
+            .thenReturn(Optional.empty());
+        
+        // WHEN & THEN
+        assertThatThrownBy(() -> usuarioService.atualizar(999L, atualizacaoDTO))
+            .isInstanceOf(ResourceNotFoundException.class)
+            .hasMessageContaining("não encontrado");
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção ao atualizar para email já existente")
+    void deveLancarExcecaoAoAtualizarParaEmailJaExistente() {
+        // GIVEN
+        Usuario outroUsuario = Usuario.builder()
+                .id(2L)
+                .nome("Maria")
+                .email(Email.de("maria@teste.com"))
+                .build();
+        
+        UsuarioDTO atualizacaoDTO = UsuarioDTO.builder()
+                .nome("João Silva")
+                .email("maria@teste.com") // Tentar mudar para email de outro usuário
+                .build();
+        
+        when(usuarioRepository.findById(1L))
+            .thenReturn(Optional.of(usuario));
+        when(usuarioRepository.findByEmail_Endereco("maria@teste.com"))
+            .thenReturn(Optional.of(outroUsuario));
+        
+        // WHEN & THEN
+        assertThatThrownBy(() -> usuarioService.atualizar(1L, atualizacaoDTO))
+            .isInstanceOf(BusinessException.class)
+            .hasMessageContaining("já está cadastrado");
+    }
+
+    @Test
+    @DisplayName("Deve atualizar sem verificar email quando mantém o mesmo")
+    void deveAtualizarSemVerificarEmailQuandoMantemMesmo() {
+        // GIVEN
+        UsuarioDTO atualizacaoDTO = UsuarioDTO.builder()
+                .nome("João Silva Atualizado")
+                .email("joao@teste.com") // Mesmo email
+                .build();
+        
+        when(usuarioRepository.findById(1L))
+            .thenReturn(Optional.of(usuario));
+        when(usuarioRepository.save(any(Usuario.class)))
+            .thenReturn(usuario);
+        
+        // WHEN
+        UsuarioDTO resultado = usuarioService.atualizar(1L, atualizacaoDTO);
+        
+        // THEN
+        assertThat(resultado).isNotNull();
+        // Não deve chamar findByEmail_Endereco porque o email não mudou
+        verify(usuarioRepository, never()).findByEmail_Endereco(anyString());
+    }
+
+    @Test
+    @DisplayName("Deve atualizar quando DTO tem email diferente e novo email está disponível")
+    void deveAtualizarQuandoEmailDiferenteEstaDisponivel() {
+        // GIVEN
+        UsuarioDTO atualizacaoDTO = UsuarioDTO.builder()
+                .nome("João Silva")
+                .email("novo.email@teste.com") // Email diferente
+                .build();
+        
+        when(usuarioRepository.findById(1L))
+            .thenReturn(Optional.of(usuario));
+        when(usuarioRepository.findByEmail_Endereco("novo.email@teste.com"))
+            .thenReturn(Optional.empty()); // Email disponível
+        when(usuarioRepository.save(any(Usuario.class)))
+            .thenReturn(usuario);
+        
+        // WHEN
+        UsuarioDTO resultado = usuarioService.atualizar(1L, atualizacaoDTO);
+        
+        // THEN
+        assertThat(resultado).isNotNull();
+        verify(usuarioRepository, times(1)).findByEmail_Endereco("novo.email@teste.com");
+    }
+
+    @Test
+    @DisplayName("Deve atualizar quando email no DTO é null")
+    void deveAtualizarQuandoEmailNoDTONull() {
+        // GIVEN
+        UsuarioDTO atualizacaoDTO = UsuarioDTO.builder()
+                .nome("João Silva Atualizado")
+                .email(null) // Email null
+                .build();
+        
+        when(usuarioRepository.findById(1L))
+            .thenReturn(Optional.of(usuario));
+        when(usuarioRepository.save(any(Usuario.class)))
+            .thenReturn(usuario);
+        
+        // WHEN
+        UsuarioDTO resultado = usuarioService.atualizar(1L, atualizacaoDTO);
+        
+        // THEN
+        assertThat(resultado).isNotNull();
+        verify(usuarioRepository, never()).findByEmail_Endereco(anyString());
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção ao desativar usuário inexistente")
+    void deveLancarExcecaoAoDesativarUsuarioInexistente() {
+        // GIVEN
+        when(usuarioRepository.findById(999L))
+            .thenReturn(Optional.empty());
+        
+        // WHEN & THEN
+        assertThatThrownBy(() -> usuarioService.desativar(999L))
+            .isInstanceOf(ResourceNotFoundException.class)
+            .hasMessageContaining("não encontrado");
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção ao adicionar pontos a usuário inexistente")
+    void deveLancarExcecaoAoAdicionarPontosUsuarioInexistente() {
+        // GIVEN
+        when(usuarioRepository.findById(999L))
+            .thenReturn(Optional.empty());
+        
+        // WHEN & THEN
+        assertThatThrownBy(() -> usuarioService.adicionarPontos(999L, 50))
+            .isInstanceOf(ResourceNotFoundException.class)
+            .hasMessageContaining("não encontrado");
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção ao adicionar pontos negativos")
+    void deveLancarExcecaoAoAdicionarPontosNegativos() {
+        // GIVEN
+        when(usuarioRepository.findById(1L))
+            .thenReturn(Optional.of(usuario));
+        
+        // WHEN & THEN
+        assertThatThrownBy(() -> usuarioService.adicionarPontos(1L, -50))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("positivos");
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção ao adicionar pontos null")
+    void deveLancarExcecaoAoAdicionarPontosNull() {
+        // GIVEN
+        when(usuarioRepository.findById(1L))
+            .thenReturn(Optional.of(usuario));
+        
+        // WHEN & THEN
+        assertThatThrownBy(() -> usuarioService.adicionarPontos(1L, null))
+            .isInstanceOf(IllegalArgumentException.class);
+    }
 }
