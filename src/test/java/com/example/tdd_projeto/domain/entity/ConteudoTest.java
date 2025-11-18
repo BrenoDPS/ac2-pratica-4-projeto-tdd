@@ -113,4 +113,58 @@ class ConteudoTest {
         assertEquals(Conteudo.TipoConteudo.ARTIGO, Conteudo.TipoConteudo.valueOf("ARTIGO"));
         assertEquals(Conteudo.TipoConteudo.TUTORIAL, Conteudo.TipoConteudo.valueOf("TUTORIAL"));
     }
+
+    @Test
+    @DisplayName("Deve executar onCreate quando data e visualizacoes sao null")
+    void deveExecutarOnCreateQuandoAmbosNull() {
+        Conteudo novo = new Conteudo();
+        novo.setDataPublicacao(null);
+        novo.setVisualizacoes(null);
+        
+        novo.onCreate();
+        
+        assertNotNull(novo.getDataPublicacao());
+        assertEquals(0, novo.getVisualizacoes());
+    }
+
+    @Test
+    @DisplayName("Deve manter data quando ja existe mas inicializar visualizacoes")
+    void deveManterDataMasInicializarVisualizacoes() {
+        LocalDateTime dataFixa = LocalDateTime.of(2024, 6, 15, 10, 30);
+        Conteudo novo = new Conteudo();
+        novo.setDataPublicacao(dataFixa);
+        novo.setVisualizacoes(null);
+        
+        novo.onCreate();
+        
+        assertEquals(dataFixa, novo.getDataPublicacao());
+        assertEquals(0, novo.getVisualizacoes());
+    }
+
+    @Test
+    @DisplayName("Deve inicializar data quando null mas manter visualizacoes")
+    void deveInicializarDataMasManterVisualizacoes() {
+        Conteudo novo = new Conteudo();
+        novo.setDataPublicacao(null);
+        novo.setVisualizacoes(50);
+        
+        novo.onCreate();
+        
+        assertNotNull(novo.getDataPublicacao());
+        assertEquals(50, novo.getVisualizacoes());
+    }
+
+    @Test
+    @DisplayName("Deve manter ambos quando ja existem")
+    void deveManterAmbosQuandoJaExistem() {
+        LocalDateTime dataFixa = LocalDateTime.of(2024, 6, 15, 10, 30);
+        Conteudo novo = new Conteudo();
+        novo.setDataPublicacao(dataFixa);
+        novo.setVisualizacoes(100);
+        
+        novo.onCreate();
+        
+        assertEquals(dataFixa, novo.getDataPublicacao());
+        assertEquals(100, novo.getVisualizacoes());
+    }
 }
