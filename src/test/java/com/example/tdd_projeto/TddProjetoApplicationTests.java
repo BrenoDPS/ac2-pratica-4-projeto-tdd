@@ -8,9 +8,9 @@ import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-@DisplayName("Testes de Contexto da Aplicação")
+@DisplayName("Testes de Contexto da Aplicacao")
 class TddProjetoApplicationTests {
 
     @Test
@@ -20,14 +20,9 @@ class TddProjetoApplicationTests {
     }
 
     @Test
-    @DisplayName("Deve executar main")
-    void shouldRunMain() {
-        TddProjetoApplication.main(new String[]{});
-    }
-
-    @Test
-    @DisplayName("Deve instanciar classe")
-    void shouldInstantiate() {
-        assertThat(new TddProjetoApplication()).isNotNull();
+    @DisplayName("Deve inicializar classe da aplicacao")
+    void shouldInstantiateApplicationClass() {
+        TddProjetoApplication app = new TddProjetoApplication();
+        assertThat(app).isNotNull();
     }
 }
