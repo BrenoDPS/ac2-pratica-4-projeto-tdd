@@ -3,6 +3,7 @@ pipeline {
     
     tools {
         jdk 'JDK-21'
+        maven 'Maven-3.9'
     }
     
     environment {
@@ -22,21 +23,21 @@ pipeline {
         stage('Clean') {
             steps {
                 echo '=== Limpando projeto ==='
-                bat '.\\mvnw.cmd clean'
+                bat 'mvn clean'
             }
         }
         
         stage('Build') {
             steps {
                 echo '=== Compilando projeto ==='
-                bat '.\\mvnw.cmd compile'
+                bat 'mvn compile'
             }
         }
         
         stage('Pipeline-test-dev') {
             steps {
                 echo '=== Executando testes unitarios e de integracao ==='
-                bat '.\\mvnw.cmd test'
+                bat 'mvn test'
             }
             post {
                 always {
@@ -48,7 +49,7 @@ pipeline {
         stage('Analise PMD') {
             steps {
                 echo '=== Executando analise PMD ==='
-                bat '.\\mvnw.cmd pmd:pmd pmd:cpd'
+                bat 'mvn pmd:pmd pmd:cpd'
             }
             post {
                 always {
@@ -61,7 +62,7 @@ pipeline {
         stage('Cobertura JaCoCo') {
             steps {
                 echo '=== Gerando relatorio JaCoCo ==='
-                bat '.\\mvnw.cmd jacoco:report'
+                bat 'mvn jacoco:report'
             }
             post {
                 always {
@@ -78,7 +79,7 @@ pipeline {
                 script {
                     echo '=== Verificando Quality Gate de 99% ==='
                     try {
-                        bat '.\\mvnw.cmd verify'
+                        bat 'mvn verify'
                         env.QUALITY_GATE_PASSED = 'true'
                         echo 'SUCESSO: Quality Gate passou - Cobertura >= 99%'
                     } catch (Exception e) {
@@ -111,7 +112,7 @@ pipeline {
             }
             steps {
                 echo '=== Gerando JAR da aplicacao ==='
-                bat '.\\mvnw.cmd package -DskipTests'
+                bat 'mvn package -DskipTests'
             }
             post {
                 success {
