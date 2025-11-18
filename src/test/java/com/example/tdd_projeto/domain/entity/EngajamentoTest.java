@@ -99,4 +99,76 @@ class EngajamentoTest {
         assertEquals(e1.hashCode(), e2.hashCode());
         assertTrue(engajamento.toString().contains("Engajamento"));
     }
+
+    @Test
+    @DisplayName("Deve executar onCreate quando data null e pontos null com tipo")
+    void deveExecutarOnCreateQuandoDataNullPontosNullComTipo() {
+        Engajamento novo = new Engajamento();
+        novo.setDataEngajamento(null);
+        novo.setPontos(null);
+        novo.setTipo(Engajamento.TipoEngajamento.POSTAGEM);
+        
+        novo.onCreate();
+        
+        assertNotNull(novo.getDataEngajamento());
+        assertEquals(50, novo.getPontos());
+    }
+
+    @Test
+    @DisplayName("Deve executar onCreate quando data null e pontos null sem tipo")
+    void deveExecutarOnCreateQuandoDataNullPontosNullSemTipo() {
+        Engajamento novo = new Engajamento();
+        novo.setDataEngajamento(null);
+        novo.setPontos(null);
+        novo.setTipo(null);
+        
+        novo.onCreate();
+        
+        assertNotNull(novo.getDataEngajamento());
+        assertNull(novo.getPontos());
+    }
+
+    @Test
+    @DisplayName("Deve manter data quando existe mas inicializar pontos")
+    void deveManterDataMasInicializarPontos() {
+        LocalDateTime dataFixa = LocalDateTime.of(2024, 6, 15, 10, 30);
+        Engajamento novo = new Engajamento();
+        novo.setDataEngajamento(dataFixa);
+        novo.setPontos(null);
+        novo.setTipo(Engajamento.TipoEngajamento.RESPOSTA);
+        
+        novo.onCreate();
+        
+        assertEquals(dataFixa, novo.getDataEngajamento());
+        assertEquals(30, novo.getPontos());
+    }
+
+    @Test
+    @DisplayName("Deve inicializar data mas manter pontos existentes")
+    void deveInicializarDataMasManterPontos() {
+        Engajamento novo = new Engajamento();
+        novo.setDataEngajamento(null);
+        novo.setPontos(100);
+        novo.setTipo(Engajamento.TipoEngajamento.CURTIDA);
+        
+        novo.onCreate();
+        
+        assertNotNull(novo.getDataEngajamento());
+        assertEquals(100, novo.getPontos());
+    }
+
+    @Test
+    @DisplayName("Deve manter ambos quando ja existem")
+    void deveManterAmbosQuandoJaExistem() {
+        LocalDateTime dataFixa = LocalDateTime.of(2024, 6, 15, 10, 30);
+        Engajamento novo = new Engajamento();
+        novo.setDataEngajamento(dataFixa);
+        novo.setPontos(200);
+        novo.setTipo(Engajamento.TipoEngajamento.COMENTARIO);
+        
+        novo.onCreate();
+        
+        assertEquals(dataFixa, novo.getDataEngajamento());
+        assertEquals(200, novo.getPontos());
+    }
 }

@@ -127,4 +127,98 @@ class UsuarioTest {
         assertThat(usuario1).isNotEqualTo(usuario3); // IDs diferentes
         assertThat(usuario1.hashCode()).isEqualTo(usuario2.hashCode());
     }
+
+    @Test
+    @DisplayName("Deve executar onCreate quando todos campos null")
+    void deveExecutarOnCreateQuandoTodosCamposNull() {
+        Usuario novo = new Usuario();
+        novo.setDataCadastro(null);
+        novo.setAtivo(null);
+        novo.setPontuacaoTotal(null);
+        
+        novo.onCreate();
+        
+        assertThat(novo.getDataCadastro()).isNotNull();
+        assertThat(novo.getAtivo()).isTrue();
+        assertThat(novo.getPontuacaoTotal()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("Deve manter dataCadastro mas inicializar ativo e pontuacao")
+    void deveManterDataCadastroMasInicializarOutros() {
+        java.time.LocalDateTime dataFixa = java.time.LocalDateTime.of(2024, 1, 1, 10, 0);
+        Usuario novo = new Usuario();
+        novo.setDataCadastro(dataFixa);
+        novo.setAtivo(null);
+        novo.setPontuacaoTotal(null);
+        
+        novo.onCreate();
+        
+        assertThat(novo.getDataCadastro()).isEqualTo(dataFixa);
+        assertThat(novo.getAtivo()).isTrue();
+        assertThat(novo.getPontuacaoTotal()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("Deve inicializar dataCadastro mas manter ativo e pontuacao")
+    void deveInicializarDataCadastroMasManterOutros() {
+        Usuario novo = new Usuario();
+        novo.setDataCadastro(null);
+        novo.setAtivo(false);
+        novo.setPontuacaoTotal(100);
+        
+        novo.onCreate();
+        
+        assertThat(novo.getDataCadastro()).isNotNull();
+        assertThat(novo.getAtivo()).isFalse();
+        assertThat(novo.getPontuacaoTotal()).isEqualTo(100);
+    }
+
+    @Test
+    @DisplayName("Deve inicializar apenas pontuacao quando null")
+    void deveInicializarApenasPontuacao() {
+        java.time.LocalDateTime dataFixa = java.time.LocalDateTime.of(2024, 1, 1, 10, 0);
+        Usuario novo = new Usuario();
+        novo.setDataCadastro(dataFixa);
+        novo.setAtivo(true);
+        novo.setPontuacaoTotal(null);
+        
+        novo.onCreate();
+        
+        assertThat(novo.getDataCadastro()).isEqualTo(dataFixa);
+        assertThat(novo.getAtivo()).isTrue();
+        assertThat(novo.getPontuacaoTotal()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("Deve inicializar apenas ativo quando null")
+    void deveInicializarApenasAtivo() {
+        java.time.LocalDateTime dataFixa = java.time.LocalDateTime.of(2024, 1, 1, 10, 0);
+        Usuario novo = new Usuario();
+        novo.setDataCadastro(dataFixa);
+        novo.setAtivo(null);
+        novo.setPontuacaoTotal(50);
+        
+        novo.onCreate();
+        
+        assertThat(novo.getDataCadastro()).isEqualTo(dataFixa);
+        assertThat(novo.getAtivo()).isTrue();
+        assertThat(novo.getPontuacaoTotal()).isEqualTo(50);
+    }
+
+    @Test
+    @DisplayName("Deve manter todos quando ja existem")
+    void deveManterTodosQuandoJaExistem() {
+        java.time.LocalDateTime dataFixa = java.time.LocalDateTime.of(2024, 1, 1, 10, 0);
+        Usuario novo = new Usuario();
+        novo.setDataCadastro(dataFixa);
+        novo.setAtivo(false);
+        novo.setPontuacaoTotal(200);
+        
+        novo.onCreate();
+        
+        assertThat(novo.getDataCadastro()).isEqualTo(dataFixa);
+        assertThat(novo.getAtivo()).isFalse();
+        assertThat(novo.getPontuacaoTotal()).isEqualTo(200);
+    }
 }

@@ -166,4 +166,11 @@ class UsuarioMapperTest {
 
         assertEquals("Nome Atualizado", entity.getNome());
     }
+
+    @Test
+    @DisplayName("Deve instanciar UsuarioMapper")
+    void deveInstanciarUsuarioMapper() {
+        UsuarioMapper mapper = new UsuarioMapper();
+        assertNotNull(mapper);
+    }
 }
